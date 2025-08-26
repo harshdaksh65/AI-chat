@@ -55,7 +55,7 @@ const Home = () => {
     if (title) title = title.trim();
     if (!title) return
 
-    const response = await axios.post("http://localhost:3000/api/chat", {
+    const response = await axios.post("https://gpt-clone-ai.onrender.com/api/chat", {
       title
     }, {
       withCredentials: true
@@ -68,12 +68,12 @@ const Home = () => {
   // Ensure at least one chat exists initially
   useEffect(() => {
 
-    axios.get("http://localhost:3000/api/chat", { withCredentials: true })
+    axios.get("https://gpt-clone-ai.onrender.com/api/chat", { withCredentials: true })
       .then(response => {
         dispatch(setChats(response.data.chats.reverse()));
       })
 
-    const tempSocket = io("http://localhost:3000", {
+    const tempSocket = io("https://gpt-clone-ai.onrender.com", {
       withCredentials: true,
     })
 
@@ -126,7 +126,7 @@ const Home = () => {
 
   const getMessages = async (chatId) => {
 
-   const response = await  axios.get(`http://localhost:3000/api/chat/messages/${chatId}`, { withCredentials: true })
+   const response = await  axios.get(`https://gpt-clone-ai.onrender.com/api/chat/messages/${chatId}`, { withCredentials: true })
 
    console.log("Fetched messages:", response.data.messages);
 
