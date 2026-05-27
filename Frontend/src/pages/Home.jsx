@@ -31,7 +31,7 @@ const SOCKET_BASE_URL =
   import.meta.env.VITE_SOCKET_URL ||
   (isLocalHost
     ? "http://localhost:3000"
-    : "https://gpt-clone-ai.onrender.com");
+    : "https://ai-chat-ekbt.onrender.com");
 
 const Home = () => {
   const dispatch = useDispatch();
