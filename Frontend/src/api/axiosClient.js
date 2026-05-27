@@ -8,7 +8,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   (isLocalHost
     ? "http://localhost:3000/api"
-    : "https://gpt-clone-ai.onrender.com/api");
+    : "https://ai-chat-ekbt.onrender.com/api");
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
