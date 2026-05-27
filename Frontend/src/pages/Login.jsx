@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosClient';
 
 
 const Login = () => {
@@ -21,21 +21,20 @@ const Login = () => {
 
         console.log(form);
 
-        axios.post("https://gpt-clone-ai.onrender.com/api/auth/login", {
-            email: form.email,
-            password: form.password
-        },
-            {
-                withCredentials: true
+            try {
+                const res = await api.post("/auth/login", {
+                    email: form.email,
+                    password: form.password
+                });
+
+                localStorage.setItem("user", JSON.stringify(res.data.user));
+                console.log(res);
+                navigate("/");
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setSubmitting(false);
             }
-        ).then((res) => {
-            console.log(res);
-            navigate("/");
-        }).catch((err) => {
-            console.error(err);
-        }).finally(() => {
-            setSubmitting(false);
-        });
 
     }
 

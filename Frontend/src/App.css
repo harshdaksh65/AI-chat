@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(244, 162, 97, 0.16), transparent 32%),
+    radial-gradient(circle at top right, rgba(75, 192, 181, 0.12), transparent 28%),
+    linear-gradient(180deg, #f5efe5 0%, #ece0d1 100%);
+}
+
 html,
 body {
   height: 100%;
@@ -16,8 +24,41 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
-  color-scheme: light dark;
-  /* hint native UI */
+  color-scheme: light;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: auto;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(22px);
+}
+
+body::before {
+  width: 340px;
+  height: 340px;
+  left: -90px;
+  top: 20px;
+  background: radial-gradient(circle, rgba(244, 162, 97, 0.28), transparent 70%);
+}
+
+body::after {
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  bottom: -80px;
+  background: radial-gradient(circle, rgba(75, 192, 181, 0.2), transparent 68%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
 }
 
 a {
@@ -41,24 +82,41 @@ a:hover {
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.9), rgba(247, 236, 223, 0.82));
+  border: 1px solid rgba(97, 69, 42, 0.16);
+  border-radius: 28px;
   padding: clamp(var(--space-5), 5vw, var(--space-8));
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  backdrop-filter: blur(18px);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(75, 192, 181, 0.12), transparent 24%),
+    radial-gradient(circle at left bottom, rgba(244, 162, 97, 0.14), transparent 26%);
+  pointer-events: none;
 }
 
 .auth-header {
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-header h1 {
   margin: 0 0 var(--space-2);
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.04em;
+  font-family: var(--font-display);
 }
 
 .auth-sub {
@@ -71,6 +129,8 @@ form.auth-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  position: relative;
+  z-index: 1;
 }
 
 form.auth-form .field-group {
@@ -87,9 +147,9 @@ form.auth-form label {
 form.auth-form input {
   font: inherit;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-alt);
+  border: 1px solid rgba(81, 64, 49, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.65);
   color: var(--color-text);
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
@@ -98,7 +158,7 @@ form.auth-form input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: var(--color-focus-ring);
-  background: var(--color-bg);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .grid-2 {
@@ -134,21 +194,23 @@ button.primary-btn {
   appearance: none;
   cursor: pointer;
   border: 1px solid var(--color-primary);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: #fff;
   font: inherit;
   font-weight: var(--font-weight-medium);
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  box-shadow: 0 14px 24px rgba(182, 93, 43, 0.22);
 }
 
 button.primary-btn:hover {
-  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--color-primary-hover), #155f58);
 }
 
 button.primary-btn:focus {
@@ -169,13 +231,15 @@ button.primary-btn:disabled {
   text-align: center;
   font-size: var(--text-sm);
   color: var(--color-text-muted);
+  position: relative;
+  z-index: 1;
 }
 
 .auth-alt a {
   font-weight: var(--font-weight-medium);
 }
 
-/* Theme toggle removed since system preference is used */
+/* Light-only UI; no theme toggle. */
 
 /* Smooth theme transition */
 html {

@@ -5,10 +5,12 @@ import ChatMobileBar from "../components/chat/ChatMobileBar.jsx";
 import ChatSidebar from "../components/chat/ChatSidebar.jsx";
 import ChatMessages from "../components/chat/ChatMessages.jsx";
 import ChatComposer from "../components/chat/ChatComposer.jsx";
+import ChatNavbar from "../components/chat/ChatNavbar.jsx";
+import NewChatModal from "../components/chat/NewChatModal.jsx";
 import "../components/chat/ChatLayout.css";
 import { fakeAIReply } from "../components/chat/aiClient.js";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import api from "../api/axiosClient";
 import {
   ensureInitialChat,
   startNewChat,
@@ -21,6 +23,16 @@ import {
   setChats,
 } from "../store/chatSlice.js";
 
+const isLocalHost =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+const SOCKET_BASE_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  (isLocalHost
+    ? "http://localhost:3000"
+    : "https://gpt-clone-ai.onrender.com");
+
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,9 +41,10 @@ const Home = () => {
   const input = useSelector((state) => state.chat.input);
   const isSending = useSelector((state) => state.chat.isSending);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [socket, setSocket] = useState(null);
 
-  const activeChat = chats.find((c) => c.id === activeChatId) || null;
+  const activeChat = chats.find((c) => (c._id || c.id) === activeChatId) || null;
 
   const [messages, setMessages] = useState([
     // {
@@ -56,38 +69,43 @@ const Home = () => {
     navigate("/login");
   };
 
-  const handleNewChat = async () => {
-    // Prompt user for title of new chat, fallback to 'New Chat'
-    let title = window.prompt("Enter a title for the new chat:", "");
-    if (title) title = title.trim();
-    if (!title) return;
+  const handleNewChat = () => {
+    setIsNewChatOpen(true);
+  };
 
-    const response = await axios.post(
-      "https://gpt-clone-ai.onrender.com/api/chat",
-      {
-        title,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-    getMessages(response.data.chat._id);
-    dispatch(startNewChat(response.data.chat));
-    setSidebarOpen(false);
+  const handleCreateChat = async (title) => {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) return;
+
+    try {
+      const response = await api.post("/chat", {
+        title: trimmedTitle,
+      });
+
+      dispatch(startNewChat(response.data.chat));
+      setMessages([]);
+      setSidebarOpen(false);
+      setIsNewChatOpen(false);
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+      alert(error?.response?.data?.message || "Failed to create chat");
+    }
   };
 
   // Ensure at least one chat exists initially
   useEffect(() => {
-    axios
-      .get("https://gpt-clone-ai.onrender.com/api/chat", {
-        withCredentials: true,
-      })
+    api
+      .get("/chat")
       .then((response) => {
         dispatch(setChats(response.data.chats.reverse()));
       });
 
-    const tempSocket = io("https://gpt-clone-ai.onrender.com", {
+    const tempSocket = io(SOCKET_BASE_URL, {
       withCredentials: true,
+    });
+
+    tempSocket.on("connect_error", (error) => {
+      console.error("Socket connection failed:", error.message);
     });
 
     tempSocket.on("ai-response", (messagePayload) => {
@@ -142,10 +160,7 @@ const Home = () => {
   };
 
   const getMessages = async (chatId) => {
-    const response = await axios.get(
-      `https://gpt-clone-ai.onrender.com/api/chat/messages/${chatId}`,
-      { withCredentials: true }
-    );
+    const response = await api.get(`/chat/messages/${chatId}`);
 
     console.log("Fetched messages:", response.data.messages);
 
@@ -165,7 +180,7 @@ const Home = () => {
   }, [navigate]);
 
   return (
-    <div className="chat-layout minimal">
+    <div className={`chat-layout minimal ${sidebarOpen ? "sidebar-open" : ""}`}>
       <ChatMobileBar
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
         onNewChat={handleNewChat}
@@ -184,15 +199,29 @@ const Home = () => {
         isLoggedIn={isLoggedIn}
         open={sidebarOpen}
       />
-      <main className="chat-main" role="main">
+      <main
+        className={`chat-main ${messages.length === 0 ? "is-empty" : "has-messages"}`}
+        role="main"
+      >
+        {activeChatId && !sidebarOpen && (
+          <ChatNavbar
+            title={activeChat?.title || "AI chat"}
+            onBack={() => {
+              dispatch(selectChat(null));
+              setMessages([]);
+              setSidebarOpen(false);
+              navigate("/");
+            }}
+          />
+        )}
         {messages.length === 0 && (
           <div className="chat-welcome" aria-hidden="true">
-            <div className="chip">Early Preview</div>
-            <h1>ChatGPT Clone</h1>
+            <div className="chip">AI chat</div>
+            <h1>Curated conversations with character</h1>
             <p>
-              Ask anything. Paste text, brainstorm ideas, or get quick
-              explanations. Your chats stay in the sidebar so you can pick up
-              where you left off.
+              Ask anything, sketch ideas, or test prompts in a space designed
+              to feel more like a crafted workspace than a standard assistant
+              window.
             </p>
           </div>
         )}
@@ -206,6 +235,11 @@ const Home = () => {
           />
         )}
       </main>
+      <NewChatModal
+        open={isNewChatOpen}
+        onClose={() => setIsNewChatOpen(false)}
+        onCreate={handleCreateChat}
+      />
       {sidebarOpen && (
         <button
           className="sidebar-backdrop"

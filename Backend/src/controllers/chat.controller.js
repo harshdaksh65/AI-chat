@@ -7,9 +7,17 @@ async function createChat(req, res) {
     const { title } = req.body;
     const user = req.user;
 
+    if (!user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (!title || !title.trim()) {
+        return res.status(400).json({ message: 'Chat title is required' });
+    }
+
     const chat = await chatModel.create({
         user: user._id,
-        title
+        title: title.trim()
     });
 
     res.status(201).json({
@@ -26,6 +34,10 @@ async function createChat(req, res) {
 
 async function getChats(req, res) {
     const user = req.user;
+
+    if (!user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
 
     const chats = await chatModel.find({ user: user._id });
 

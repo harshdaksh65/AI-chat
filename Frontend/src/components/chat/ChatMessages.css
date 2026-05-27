@@ -1,22 +1,63 @@
 /* Container & flow */
 .messages {
-    flex: 1;
-    width: 100%;
+    flex: 1 1 auto;
+    align-self: stretch;
+    height: auto;
+    width: min(100%, 1040px);
+    margin-inline: auto;
+    min-height: 0;
+    margin-top: 48px;
+    margin-bottom: -44px;
+    padding-top: 0;
+    padding-bottom: 4px;
+    overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(96, 74, 56, 0.45) transparent;
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    max-width: 820px;
+    gap: 0;
+    padding-left: clamp(12px, 2vw, 24px);
+    padding-right: clamp(12px, 2vw, 24px);
 }
 
-.messages::-webkit-scrollbar{
-    display: none;
+.messages.is-empty {
+    justify-content: center;
+    min-height: calc(100dvh - 180px);
+}
+
+.messages-track {
+    flex: 1 0 auto;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-5);
+}
+
+.messages::-webkit-scrollbar {
+    width: 10px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: rgba(96, 74, 56, 0.45);
+    border-radius: 999px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(96, 74, 56, 0.6);
 }
 
 .msg {
     display: flex;
     flex-direction: column;
-    max-width: 780px;
+    max-width: min(720px, 100%);
     position: relative;
 }
 
@@ -36,29 +77,32 @@
 /* Bubble styling refined */
 .msg-bubble {
     padding: var(--space-4) var(--space-5);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-alt);
-    border-radius: 14px;
+    border: 1px solid rgba(61, 48, 35, 0.14);
+    background: rgba(255, 250, 244, 0.92);
+    border-radius: 18px;
     line-height: 1.5;
     white-space: pre-wrap;
     word-wrap: break-word;
     font-size: var(--text-sm);
+    box-shadow: var(--shadow-xs);
 }
 
 .msg-user .msg-bubble {
-    background: linear-gradient(180deg, #1f1f1f, #161616);
-    color: #fafafa;
-    border: 1px solid #2a2a2a;
+    background: linear-gradient(135deg, #c66a31, #e08a4d);
+    color: #fffaf4;
+    border: 1px solid rgba(198, 106, 49, 0.18);
+    margin-left: auto;
 }
 
 .minimal .msg-user .msg-bubble {
-    background: #111;
-    border-color: #2a2a2a;
+    background: linear-gradient(135deg, #1d1511, #36291f);
+    border-color: rgba(255,255,255,0.08);
 }
 
 .msg-ai .msg-bubble {
-    background: #0d0d0d;
-    border-color: #1e1e1e;
+    background: rgba(255, 250, 244, 0.95);
+    border-color: rgba(61, 48, 35, 0.12);
+    color: var(--color-text);
 }
 
 .msg-ai.pending .msg-bubble {
@@ -91,24 +135,24 @@
 .msg-actions button {
     width: 30px;
     height: 30px;
-    background: #0d0d0d;
-    border: 1px solid #1e1e1e;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(61, 48, 35, 0.12);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
     cursor: pointer;
-    color: #6a6a6a;
+    color: var(--color-text-muted);
     padding: 0;
 }
 
 .msg-actions button:hover {
-    background: #151515;
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--color-text);
 }
 
 .msg-actions button:focus-visible {
-    outline: 2px solid #ffffff;
+    outline: 2px solid rgba(255, 255, 255, 0.9);
     outline-offset: 2px;
 }
 
@@ -163,5 +207,45 @@
 
     40% {
         opacity: 1;
+    }
+}
+
+.msg-user {
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.msg-ai {
+    align-self: flex-start;
+}
+
+.msg-user .msg-role {
+    text-align: right;
+}
+
+@media (max-width: 640px) {
+    .messages {
+        margin-top: -48px;
+        margin-bottom: 44px;
+        padding-top: 0px;
+        padding-bottom: 4px;
+        min-height: 0;
+    }
+
+    .messages-track {
+        gap: var(--space-4);
+    }
+
+    .messages.is-empty {
+        min-height: calc(100dvh - 160px);
+    }
+
+    .msg-bubble {
+        padding: var(--space-3) var(--space-4);
+        border-radius: 16px;
+    }
+
+    .msg {
+        max-width: 100%;
     }
 }

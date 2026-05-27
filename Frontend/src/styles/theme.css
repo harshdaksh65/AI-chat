@@ -1,25 +1,29 @@
-/* CSS Variable Theme Tokens (light + dark) */
+/* CSS Variable Theme Tokens (light only) */
 /* Keep ONLY variables here; structural styles go elsewhere */
 
 :root {
   /* Palette */
-  --color-bg: #ffffff;
-  --color-bg-alt: #f5f7fa;
-  --color-surface: #ffffff;
-  --color-border: #d0d7de;
-  --color-text: #111827;
-  --color-text-muted: #5f6b7a;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-danger: #dc2626;
-  --color-focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.4);
+  --color-bg: #f3efe7;
+  --color-bg-alt: #e8dfd1;
+  --color-surface: rgba(255, 250, 242, 0.82);
+  --color-surface-strong: rgba(20, 17, 14, 0.88);
+  --color-border: rgba(61, 48, 35, 0.15);
+  --color-text: #18120e;
+  --color-text-muted: #6e5f51;
+  --color-primary: #b65d2b;
+  --color-primary-hover: #9f4d1f;
+  --color-secondary: #1d6d63;
+  --color-accent: #f2b44b;
+  --color-danger: #b42318;
+  --color-focus-ring: 0 0 0 3px rgba(182, 93, 43, 0.22);
 
   /* Elevation */
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-xs: 0 1px 2px rgba(32, 18, 10, 0.08);
+  --shadow-sm: 0 16px 42px rgba(52, 34, 18, 0.12), 0 2px 6px rgba(52, 34, 18, 0.06);
 
   /* Typography */
-  --font-sans: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+  --font-sans: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+  --font-display: "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
@@ -41,20 +45,4 @@
   --transition-fast: 120ms cubic-bezier(.4,0,.2,1);
 }
 
-/* Dark Theme (system preference) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0f172a;
-    --color-bg-alt: #1e293b;
-    --color-surface: #1e293b;
-    --color-border: #334155;
-    --color-text: #f1f5f9;
-    --color-text-muted: #94a3b8;
-    --color-primary: #3b82f6;
-    --color-primary-hover: #2563eb;
-    --color-danger: #f87171;
-    --color-focus-ring: 0 0 0 3px rgba(59,130,246,0.45);
-    --shadow-xs: 0 1px 2px rgba(0,0,0,0.6);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.7), 0 1px 2px rgba(0,0,0,0.5);
-  }
-}
+/* Light-only theme keeps the app consistent across system preferences. */

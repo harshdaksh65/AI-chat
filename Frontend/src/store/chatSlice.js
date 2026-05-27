@@ -1,7 +1,19 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
 
 // helpers
-const createEmptyChat = (title) => ({ id: nanoid(), title: title || 'New Chat', messages: [] });
+const normalizeChat = (chat) => {
+    const chatId = chat?._id || chat?.id || nanoid();
+
+    return {
+        ...chat,
+        _id: chatId,
+        id: chatId,
+        title: chat?.title || 'New Chat',
+        messages: chat?.messages || []
+    };
+};
+
+const createEmptyChat = (title) => normalizeChat({ title: title || 'New Chat' });
 
 const chatSlice = createSlice({
     name: 'chat',
@@ -21,9 +33,9 @@ const chatSlice = createSlice({
         },
         startNewChat: {
             reducer(state, action) {
-                const { _id, title } = action.payload;
-                state.chats.unshift({ _id, title: title || 'New Chat', messages: [] });
-                state.activeChatId = _id;
+                const chat = normalizeChat(action.payload);
+                state.chats.unshift(chat);
+                state.activeChatId = chat.id;
             }
         },
         selectChat(state, action) {
@@ -39,12 +51,12 @@ const chatSlice = createSlice({
             state.isSending = false;
         },
         setChats(state, action) {
-            state.chats = action.payload;
+            state.chats = action.payload.map(normalizeChat);
         },
         addUserMessage: {
             reducer(state, action) {
                 const { chatId, message } = action.payload;
-                const chat = state.chats.find(c => c.id === chatId);
+                const chat = state.chats.find(c => (c._id || c.id) === chatId);
                 if (!chat) return;
                 if (chat.messages.length === 0) {
                     chat.title = message.content.slice(0, 40) + (message.content.length > 40 ? '…' : '');
@@ -58,7 +70,7 @@ const chatSlice = createSlice({
         addAIMessage: {
             reducer(state, action) {
                 const { chatId, message } = action.payload;
-                const chat = state.chats.find(c => c.id === chatId);
+                const chat = state.chats.find(c => (c._id || c.id) === chatId);
                 if (!chat) return;
                 chat.messages.push(message);
             },

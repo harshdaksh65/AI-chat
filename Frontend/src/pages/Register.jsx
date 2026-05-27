@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosClient';
 
 const Register = () => {
     const [ form, setForm ] = useState({ email: '', firstname: '', lastname: '', password: '' });
@@ -18,28 +18,23 @@ const Register = () => {
         setSubmitting(true);
         console.log(form);
 
-        axios.post("https://gpt-clone-ai.onrender.com/api/auth/register", {
-            email: form.email,
-            fullName: {
-                firstName: form.firstname,
-                lastName: form.lastname
-            },
-            password: form.password
-        }, {
-            withCredentials: true
-        }).then((res) => {
+        try {
+            const res = await api.post("/auth/register", {
+                email: form.email,
+                fullName: {
+                    firstName: form.firstname,
+                    lastName: form.lastname
+                },
+                password: form.password
+            });
+
+            localStorage.setItem("user", JSON.stringify(res.data.user));
             console.log(res);
             navigate("/");
-        }).catch((err) => {
-            console.error(err);
-            alert('Registration failed (placeholder)');
-        })
-
-        try {
-            // Placeholder: integrate real registration logic / API call.
 
         } catch (err) {
             console.error(err);
+            alert('Registration failed (placeholder)');
         } finally {
             setSubmitting(false);
         }
