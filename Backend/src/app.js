@@ -15,9 +15,9 @@ const app = express();
 
 /* using middlewares */
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://gpt-clone-ai.onrender.com'],
     credentials: true
-}))
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
