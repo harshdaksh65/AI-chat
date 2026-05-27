@@ -109,8 +109,6 @@ const Home = () => {
     });
 
     tempSocket.on("ai-response", (messagePayload) => {
-      console.log("Received AI response:", messagePayload);
-
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -121,13 +119,11 @@ const Home = () => {
 
       dispatch(sendingFinished());
     });
-
     setSocket(tempSocket);
   }, []);
 
   const sendMessage = async () => {
     const trimmed = input.trim();
-    console.log("Sending message:", trimmed);
     if (!trimmed || !activeChatId || isSending) return;
     dispatch(sendingStarted());
 
@@ -138,8 +134,6 @@ const Home = () => {
         content: trimmed,
       },
     ];
-
-    console.log("New messages:", newMessages);
 
     setMessages(newMessages);
     dispatch(setInput(""));
@@ -161,8 +155,6 @@ const Home = () => {
 
   const getMessages = async (chatId) => {
     const response = await api.get(`/chat/messages/${chatId}`);
-
-    console.log("Fetched messages:", response.data.messages);
 
     setMessages(
       response.data.messages.map((m) => ({

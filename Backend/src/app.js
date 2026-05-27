@@ -15,7 +15,7 @@ const app = express();
 
 /* using middlewares */
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://gpt-clone-ai.onrender.com'],
+    origin: ['http://localhost:5173','https://ai-chat-ekbt.onrender.com' ,'https://gpt-clone-ai.onrender.com'],
     credentials: true
 }));
 app.use(express.json());

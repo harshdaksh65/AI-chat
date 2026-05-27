@@ -16,7 +16,6 @@ const Register = () => {
     async function handleSubmit(e) {
         e.preventDefault();
         setSubmitting(true);
-        console.log(form);
 
         try {
             const res = await api.post("/auth/register", {
@@ -29,7 +28,6 @@ const Register = () => {
             });
 
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            console.log(res);
             navigate("/");
 
         } catch (err) {

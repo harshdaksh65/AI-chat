@@ -18,9 +18,6 @@ const Login = () => {
         e.preventDefault();
         setSubmitting(true);
 
-
-        console.log(form);
-
             try {
                 const res = await api.post("/auth/login", {
                     email: form.email,
@@ -28,7 +25,6 @@ const Login = () => {
                 });
 
                 localStorage.setItem("user", JSON.stringify(res.data.user));
-                console.log(res);
                 navigate("/");
             } catch (err) {
                 console.error(err);
